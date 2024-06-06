@@ -1,0 +1,136 @@
+{
+    "server": {
+        "id": "a2fe836a-034e-4117-9e0c-4e05df6da784",
+        "address": "127.0.0.1",
+        "port": 8080,
+        "name": "Sample server",
+        "headers": [
+            {
+                "id": "53387923-8d59-4229-8a33-c276b65ea155",
+                "key": "Content-Type",
+                "value": "application/json",
+                "active": true
+            }
+        ],
+        "routerId": "d5926f6e-155f-42cd-8f6b-580e1fc8ab1c",
+        "description": "Just for unit testing"
+    },
+    "router": {
+        "id": "d5926f6e-155f-42cd-8f6b-580e1fc8ab1c",
+        "serverId": "a2fe836a-034e-4117-9e0c-4e05df6da784",
+        "routes": [
+            {
+                "id": "3199e75b-8c91-4464-bce9-37860e2bb2f2",
+                "path": "/api/v1/lists",
+                "responses": [
+                    {
+                        "id": "438f8657-9468-485f-ba2a-20d5b356da5a",
+                        "name": "Index your lists",
+                        "status": 200,
+                        "response": "{\r\n    \"data\": [\r\n        {\r\n            \"id\": \"db5a0609-4821-4a25-80e2-1b4cf5d6bc13\",\r\n            \"name\": \"Chores\",\r\n            \"description\": \"A list of all my chores\",\r\n            \"items\": [\r\n                {\r\n                    \"id\": \"c75d3ec9-dfb1-4505-ac11-fe7a2d225968\",\r\n                    \"list_id\": \"db5a0609-4821-4a25-80e2-1b4cf5d6bc13\",\r\n                    \"name\": \"Laundry\",\r\n                    \"checked\": false\r\n                },\r\n                {\r\n                    \"id\": \"6d8cc4ce-a1c9-4da6-bfca-2577fff3b32e\",\r\n                    \"list_id\": \"db5a0609-4821-4a25-80e2-1b4cf5d6bc13\",\r\n                    \"name\": \"Do the dishes\",\r\n                    \"checked\": true\r\n                },\r\n                {\r\n                    \"id\": \"c3465005-d8f2-4ceb-8095-b76ef526b4fe\",\r\n                    \"list_id\": \"db5a0609-4821-4a25-80e2-1b4cf5d6bc13\",\r\n                    \"name\": \"Walk the dog\",\r\n                    \"checked\": false\r\n                }\r\n            ]\r\n        },\r\n        {\r\n            \"id\": \"18ae2b15-3f3c-460f-91d5-04b3f0bdbf44\",\r\n            \"name\": \"Groceries\",\r\n            \"description\": \"This weeks shopping list\",\r\n            \"items\": [\r\n                {\r\n                    \"id\": \"3c1cf05e-4002-4715-95ca-ab2165910387\",\r\n                    \"list_id\": \"18ae2b15-3f3c-460f-91d5-04b3f0bdbf44\",\r\n                    \"name\": \"Bananas\",\r\n                    \"checked\": false\r\n                },\r\n                {\r\n                    \"id\": \"6d8cc4ce-a1c9-4da6-bfca-2577fff3b32e\",\r\n                    \"list_id\": \"18ae2b15-3f3c-460f-91d5-04b3f0bdbf44\",\r\n                    \"name\": \"Tomatoes\",\r\n                    \"checked\": false\r\n                },\r\n                {\r\n                    \"id\": \"c3465005-d8f2-4ceb-8095-b76ef526b4fe\",\r\n                    \"list_id\": \"18ae2b15-3f3c-460f-91d5-04b3f0bdbf44\",\r\n                    \"name\": \"Chicken\",\r\n                    \"checked\": false\r\n                },\r\n                {\r\n                    \"id\": \"26775aa5-d515-495e-8959-af7e6407dc92\",\r\n                    \"list_id\": \"18ae2b15-3f3c-460f-91d5-04b3f0bdbf44\",\r\n                    \"name\": \"Broccoli\",\r\n                    \"checked\": false\r\n                },\r\n                {\r\n                    \"id\": \"3103a0a6-f698-4911-ada4-e5c0e6383ca2\",\r\n                    \"list_id\": \"18ae2b15-3f3c-460f-91d5-04b3f0bdbf44\",\r\n                    \"name\": \"Milk\",\r\n                    \"checked\": false\r\n                }\r\n            ]\r\n        }\r\n    ],\r\n    \"page\": 1,\r\n    \"total_pages\": 1,\r\n    \"total\": 2\r\n}",
+                        "responseType": "json",
+                        "active": true,
+                        "headers": [
+                            {
+                                "id": "be0c96b8-5f82-4e8c-ab7a-c760d2275a64",
+                                "key": "Content-Type",
+                                "value": "application/text",
+                                "active": true
+                            },
+                            {
+                                "id": "d468de0c-f48a-477a-a4b3-4284fac40900",
+                                "key": "second",
+                                "value": "test",
+                                "active": true
+                            }
+                        ]
+                    },
+                    {
+                        "id": "fb52fcd8-7478-441e-8c9f-ecda92ef30f2",
+                        "name": "Empty list",
+                        "status": 200,
+                        "response": "{\r\n    \"data\": [],\r\n    \"page\": 1,\r\n    \"total_pages\": 1,\r\n    \"total\": 0\r\n}",
+                        "responseType": "json",
+                        "active": false,
+                        "headers": []
+                    }
+                ],
+                "activeResponse": "438f8657-9468-485f-ba2a-20d5b356da5a",
+                "method": "GET",
+                "headers": []
+            },
+            {
+                "id": "85d5482f-9a0e-4761-ac7a-6a63ac8bc03e",
+                "path": "/api/v1/lists",
+                "responses": [
+                    {
+                        "id": "cf8c8052-3ea4-4700-ae88-b4559169e8ad",
+                        "name": "Successfully created a list",
+                        "status": 201,
+                        "response": "{\r\n    \"id\": \"db5a0609-4821-4a25-80e2-1b4cf5d6bc13\",\r\n    \"name\": \"Chores\",\r\n    \"description\": \"A list of all my chores\",\r\n    \"items\": [\r\n        {\r\n            \"id\": \"c75d3ec9-dfb1-4505-ac11-fe7a2d225968\",\r\n            \"list_id\": \"db5a0609-4821-4a25-80e2-1b4cf5d6bc13\",\r\n            \"name\": \"Laundry\",\r\n            \"checked\": false\r\n        },\r\n        {\r\n            \"id\": \"6d8cc4ce-a1c9-4da6-bfca-2577fff3b32e\",\r\n            \"list_id\": \"db5a0609-4821-4a25-80e2-1b4cf5d6bc13\",\r\n            \"name\": \"Do the dishes\",\r\n            \"checked\": true\r\n        },\r\n        {\r\n            \"id\": \"c3465005-d8f2-4ceb-8095-b76ef526b4fe\",\r\n            \"list_id\": \"db5a0609-4821-4a25-80e2-1b4cf5d6bc13\",\r\n            \"name\": \"Walk the dog\",\r\n            \"checked\": false\r\n        }\r\n    ]\r\n}",
+                        "responseType": "json",
+                        "active": true,
+                        "headers": []
+                    },
+                    {
+                        "id": "86f518bb-c873-4bdd-8f08-20de9aefbf46",
+                        "name": "Validation failed",
+                        "status": 422,
+                        "response": "{\r\n    \"errors\": {\r\n        \"name\": [\r\n            \"The name field is required.\"\r\n        ],\r\n        \"description\": [\r\n            \"The description file cannot be more than 1024 characters.\"\r\n        ]\r\n    }\r\n}",
+                        "responseType": "json",
+                        "active": false,
+                        "headers": []
+                    }
+                ],
+                "activeResponse": "cf8c8052-3ea4-4700-ae88-b4559169e8ad",
+                "method": "POST",
+                "headers": []
+            },
+            {
+                "id": "0845f113-9c9f-4e7e-b694-1aea7fb17040",
+                "path": "/api/v1/lists/:item-id",
+                "responses": [
+                    {
+                        "id": "56b934f6-b646-46bd-9d5c-c6c9d2c332c0",
+                        "name": "Deleted the list",
+                        "status": 204,
+                        "response": "",
+                        "responseType": "text",
+                        "active": true,
+                        "headers": []
+                    }
+                ],
+                "activeResponse": "56b934f6-b646-46bd-9d5c-c6c9d2c332c0",
+                "method": "DELETE",
+                "headers": []
+            },
+            {
+                "id": "26a5f17b-8bf0-4c7d-9a15-947c743164b6",
+                "path": "/api/v1/lists/:list-id",
+                "responses": [
+                    {
+                        "id": "5a7e6c89-a692-48a5-8e57-f771b162e41c",
+                        "name": "Successfully updated the list",
+                        "status": 200,
+                        "response": "{\r\n    \"id\": \"db5a0609-4821-4a25-80e2-1b4cf5d6bc13\",\r\n    \"name\": \"My Chore List\",\r\n    \"description\": \"My weekend chores\",\r\n    \"items\": [\r\n        {\r\n            \"id\": \"c75d3ec9-dfb1-4505-ac11-fe7a2d225968\",\r\n            \"list_id\": \"db5a0609-4821-4a25-80e2-1b4cf5d6bc13\",\r\n            \"name\": \"Laundry\",\r\n            \"checked\": false\r\n        },\r\n        {\r\n            \"id\": \"6d8cc4ce-a1c9-4da6-bfca-2577fff3b32e\",\r\n            \"list_id\": \"db5a0609-4821-4a25-80e2-1b4cf5d6bc13\",\r\n            \"name\": \"Do the dishes\",\r\n            \"checked\": true\r\n        },\r\n        {\r\n            \"id\": \"c3465005-d8f2-4ceb-8095-b76ef526b4fe\",\r\n            \"list_id\": \"db5a0609-4821-4a25-80e2-1b4cf5d6bc13\",\r\n            \"name\": \"Walk the dog\",\r\n            \"checked\": false\r\n        }\r\n    ]\r\n}",
+                        "responseType": "json",
+                        "active": true,
+                        "headers": []
+                    },
+                    {
+                        "id": "6065da7d-d287-4861-b39d-7cd40d107165",
+                        "name": "Validation failed",
+                        "status": 422,
+                        "response": "{\r\n    \"errors\": {\r\n        \"name\": [\r\n            \"The name field must only use letters, numbers, and hyphen(-).\"\r\n        ]\n    }\r\n}",
+                        "responseType": "json",
+                        "active": false,
+                        "headers": []
+                    }
+                ],
+                "activeResponse": "5a7e6c89-a692-48a5-8e57-f771b162e41c",
+                "method": "PUT",
+                "headers": []
+            }
+        ]
+    }
+}
