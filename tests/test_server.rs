@@ -22,7 +22,8 @@ async fn spawn_app(serverinfo: ServerInfo) -> TestApp {
     let port = listener.local_addr().unwrap().port();
     let address = format!("http://127.0.0.1:{}", port);
 
-    let server = mockerize_cli::startup::run(serverinfo, listener, None).expect("Failed to bind address");
+    let server =
+        mockerize_cli::startup::run(serverinfo, listener, None).expect("Failed to bind address");
     let _ = tokio::spawn(server);
 
     TestApp { address: address }
@@ -99,14 +100,24 @@ async fn server_is_able_to_serve_a_registered_route() {
 #[tokio::test]
 async fn server_responses_include_cascaded_headers() {
     let mut serverinfo = make_serverinfo();
-    serverinfo.server.add_header(Header::new("server-level-key", "server-level-value"));
-    serverinfo.server.add_header(Header::new("override-by-route-key", "server-level-value")); // will be overriden later
-    serverinfo.server.add_header(Header::new("override-by-response-key", "server-level-value")); // will be overriden later
+    serverinfo
+        .server
+        .add_header(Header::new("server-level-key", "server-level-value"));
+    serverinfo
+        .server
+        .add_header(Header::new("override-by-route-key", "server-level-value")); // will be overriden later
+    serverinfo.server.add_header(Header::new(
+        "override-by-response-key",
+        "server-level-value",
+    )); // will be overriden later
 
     // Set up  dummy routes and responses
     let mut response = Response::new("", 200, ResponseType::Json, "{}");
     response.add_header(Header::new("response-level-key", "response-level-value"));
-    response.add_header(Header::new("override-by-response-key", "response-level-value"));
+    response.add_header(Header::new(
+        "override-by-response-key",
+        "response-level-value",
+    ));
 
     let mut route = Route::new("/test", Method::GET);
     route.add_response(response);
@@ -130,8 +141,20 @@ async fn server_responses_include_cascaded_headers() {
     let resp_headers = response.headers();
     println!("Headers: {:#?}", resp_headers);
 
-    assert_eq!(resp_headers.get("server-level-key").unwrap(), "server-level-value");
-    assert_eq!(resp_headers.get("route-level-key").unwrap(), "route-level-value");
-    assert_eq!(resp_headers.get("override-by-route-key").unwrap(), "route-level-value");
-    assert_eq!(resp_headers.get("response-level-key").unwrap(), "response-level-value");
+    assert_eq!(
+        resp_headers.get("server-level-key").unwrap(),
+        "server-level-value"
+    );
+    assert_eq!(
+        resp_headers.get("route-level-key").unwrap(),
+        "route-level-value"
+    );
+    assert_eq!(
+        resp_headers.get("override-by-route-key").unwrap(),
+        "route-level-value"
+    );
+    assert_eq!(
+        resp_headers.get("response-level-key").unwrap(),
+        "response-level-value"
+    );
 }

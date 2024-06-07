@@ -6,6 +6,6 @@ Specifically, `mockerize-cli` focuses on provisioning quick server runtimes gear
 experience that the Mockerize application provides.
 */
 
-pub mod http;
 pub mod cli;
+pub mod http;
 pub mod startup;
