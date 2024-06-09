@@ -7,20 +7,31 @@ permissions:
 
 jobs:
   release:
-    name: release ${{ matrix.target }}
+    name: Release ${{ matrix.target }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         include:
           - target: x86_64-pc-windows-gnu
+            bin: mockerize-cli
+            name: Windows-x86_64
             archive: zip
           - target: x86_64-unknown-linux-musl
-            archive: tar.gz tar.xz tar.zst
-          - target: x86_64-apple-darwin
-            archive: zip
+            bin: mockerize-cli
+            name: Linux-x86_64
+            archive: tar.gz
+          #- target: x86_64-apple-darwin # Disabled temporarily - see below
+          #  archive: zip
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2
+
+      - name: Get version from Cargo.toml
+        run: |
+          version=$(cargo metadata --format-version 1 | jq -r '.packages[] | select(.name=="${{ matrix.bin }}") | .version')
+          echo "VERSION=${version}" >> $GITHUB_ENV
+        shell: bash
+
       - name: Compile and release
         uses: rust-build/rust-build.action@v1.4.5
         env:
@@ -28,3 +39,55 @@ jobs:
         with:
           RUSTTARGET: ${{ matrix.target }}
           ARCHIVE_TYPES: ${{ matrix.archive }}
+          ARCHIVE_NAME: mockerize-cli_${{ env.VERSION }}_${{ matrix.name }}.zip
+
+  # rust-build/rust-build.action isn't working for Apple at the moment
+  # Using an alternative for Apple releases
+  release-apple:
+    name: Release - ${{ matrix.platform.release_for }}
+    strategy:
+      matrix:
+        platform:
+          - release_for: macOS-aarch64
+            os: macOS-latest
+            target: aarch64-apple-darwin
+            bin: mockerize-cli
+            name: mockerize-cli_Darwin-aarch64.zip
+            command: both
+
+    runs-on: ${{ matrix.platform.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Build binary
+        uses: houseabsolute/actions-rust-cross@v0
+        with:
+          command: ${{ matrix.platform.command }}
+          target: ${{ matrix.platform.target }}
+          args: "--locked --release"
+          strip: true
+
+      - name: Get version from Cargo.toml
+        run: |
+          version=$(cargo metadata --format-version 1 | jq -r '.packages[] | select(.name=="${{ matrix.platform.bin }}") | .version')
+          echo "VERSION=${version}" >> $GITHUB_ENV
+        shell: bash
+
+      - name: Verify build output
+        run: |
+          ls -al target/${{ matrix.platform.target }}/release/
+          file target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}
+
+      - name: Create release archive
+        run: zip -j ${{ matrix.platform.bin }}_${{ env.VERSION }}_${{ matrix.platform.release_for }}.zip target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ${{ matrix.platform.bin }}_${{ env.VERSION }}_${{ matrix.platform.release_for }}.zip
+          asset_name: ${{ matrix.platform.bin }}_${{ env.VERSION }}_${{ matrix.platform.release_for }}.zip
+          asset_content_type: application/zip
