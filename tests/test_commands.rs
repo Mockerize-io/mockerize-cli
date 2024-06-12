@@ -13,14 +13,16 @@ mod tests {
         assert!(!output.status.success());
         assert_eq!(output.status.code().unwrap(), 1); // Verify exit code
 
-        // The output should begin with "ERROR" followed by newline
+        // stdout should be "ERROR" followed by newline
+        // stderr should detail the underlying error
+        let stdout = String::from_utf8_lossy(&output.stdout);
         let stderr = String::from_utf8_lossy(&output.stderr);
 
         #[cfg(target_os = "windows")]
-        assert!(stderr.starts_with("ERROR\r\n"));
+        assert_eq!(stdout, "ERROR\r\n");
 
         #[cfg(not(target_os = "windows"))]
-        assert!(stderr.starts_with("ERROR\n"));
+        assert_eq!(stdout, "ERROR\n");
 
         // Verify that we see details about our (intentional) syntax error
         assert!(stderr.contains("tests/data/invalid.server.json"));

@@ -26,7 +26,7 @@ async fn main() -> Result<()> {
             // We handle that here as to separate the cmd logic from exit concerns - this also allows easier testing
             core::result::Result::Ok(_) => println!("OK"),
             Err(e) => {
-                eprintln!("ERROR");
+                println!("ERROR");
                 for cause in e.chain() {
                     eprintln!("{}", cause);
                 }
