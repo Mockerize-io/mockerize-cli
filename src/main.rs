@@ -1,4 +1,6 @@
-use anyhow::Result;
+use std::process;
+
+use anyhow::{Ok, Result};
 use clap::{CommandFactory, Parser};
 use dotenv::dotenv;
 use env_logger::Builder;
@@ -19,6 +21,18 @@ async fn main() -> Result<()> {
     match &args.command {
         Some(Commands::New(cmd)) => cmd.handle()?,
         Some(Commands::Run(cmd)) => cmd.handle().await?,
+        Some(Commands::Test(cmd)) => match cmd.handle() {
+            // Specifically, for the test command, we want to print OK|ERROR and exit with the appropriate code.
+            // We handle that here as to separate the cmd logic from exit concerns - this also allows easier testing
+            core::result::Result::Ok(_) => println!("OK"),
+            Err(e) => {
+                eprintln!("ERROR");
+                for cause in e.chain() {
+                    eprintln!("{}", cause);
+                }
+                process::exit(1);
+            }
+        },
         None => {
             Args::command().print_help()?;
             println!();

@@ -1,7 +1,7 @@
 use clap::{Parser, Subcommand};
 use std::io;
 
-use super::{NewCommand, RunCommand};
+use super::{NewCommand, RunCommand, TestCommand};
 
 #[derive(Parser, Debug)]
 #[command(name = "mockerize-cli")]
@@ -15,6 +15,7 @@ pub struct Args {
 pub enum Commands {
     New(NewCommand),
     Run(RunCommand),
+    Test(TestCommand),
 }
 
 /// Require that a user confirm an action. They *must* enter yes/y or no/n
