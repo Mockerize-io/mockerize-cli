@@ -1,8 +1,18 @@
+![Version](https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fraw.githubusercontent.com%2FMockerize-io%2Fmockerize-cli%2Fmain%2FCargo.toml&query=%24.package.version&label=Latest%20version) ![Tests](https://img.shields.io/github/actions/workflow/status/Mockerize-io/mockerize-cli/test_suite.yml?label=Tests)
+
+[https://mockerize-io](https://mockerize.io/)
+
 # mockerize-cli
 
 Mockerize is an open-source, cross platform, lightweight, server mocking application designed from the ground up to make creating mock development servers quick and painless.
 
 ![example running mockerize-cli](docs/images/mockerize-cli.svg)
+
+# Potential use cases
+
+- Integration testing in your CI/CD pipeline
+- End-to-end test your client-side HTTP code
+- Mock API servers to speed up development
 
 # Building
 
