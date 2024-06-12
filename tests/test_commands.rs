@@ -35,7 +35,7 @@ mod tests {
             .output()
             .expect("Failed to execute process");
 
-        assert!(output.status.success());  // Verify exit code is success
+        assert!(output.status.success()); // Verify exit code is success
 
         // The output should be "OK" followed by newline
         let stdout = String::from_utf8_lossy(&output.stdout);
