@@ -1,5 +1,6 @@
 use actix_web::dev::Server;
 use actix_web::http::StatusCode;
+use actix_web::middleware::Logger;
 use actix_web::{web, App, HttpRequest, HttpResponse, HttpServer};
 use log::{debug, info};
 use std::collections::HashMap;
@@ -22,7 +23,7 @@ pub fn run(
     let serverinfo = Arc::new(serverinfo);
 
     let server = HttpServer::new(move || {
-        let mut app = App::new();
+        let mut app = App::new().wrap(Logger::default());
 
         for route in &serverinfo.router.routes {
             let path = transform_route_path(&route.path);
@@ -82,8 +83,9 @@ pub fn merge_headers(
 fn make_route_handler(server_headers: Arc<Vec<Header>>, route: &Route) -> Option<actix_web::Route> {
     let response = route.get_active_response()?;
     let body = Arc::new(response.get_response_body());
-    let name = Arc::new(response.name.clone());
     let status = response.status;
+    let resp_id = response.id;
+    let req_description = Arc::new(format!("{} {}", route.method, route.path));
 
     let route_headers = Arc::new(route.headers.clone());
     let response_headers = Arc::new(response.headers.clone());
@@ -94,13 +96,13 @@ fn make_route_handler(server_headers: Arc<Vec<Header>>, route: &Route) -> Option
         // An Arc on Route won't work, because it would still need to outlive a static lifetime.
         // TODO: Figure this out.
         let body = body.clone();
-        let name = name.clone();
         let server_headers = Arc::clone(&server_headers);
         let route_headers = Arc::clone(&route_headers);
         let response_headers = Arc::clone(&response_headers);
+        let req_description = Arc::clone(&req_description);
 
         async move {
-            debug!("Endpoint hit; returning response for `{name}`");
+            debug!("Responding to {req_description} with response {resp_id}");
             let headers = merge_headers(&server_headers, &route_headers, &response_headers.clone());
             let mut resp = HttpResponse::build(StatusCode::from_u16(status).unwrap());
             for header in headers {
