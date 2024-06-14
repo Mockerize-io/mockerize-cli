@@ -10,7 +10,7 @@ pub struct TestApp {
 
 fn make_serverinfo() -> ServerInfo {
     let mut router = Router::new(None);
-    let server = Server::new(router.id, "127.0.0.1", 0); // addr here is disregarded
+    let server = Server::new(router.id, "127.0.0.1", 0).unwrap(); // addr here is disregarded
     router.bind_server(&server);
 
     ServerInfo { server, router }

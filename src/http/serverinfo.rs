@@ -1,9 +1,7 @@
 use anyhow::{Context, Result};
 use serde::{Deserialize, Serialize};
-use std::{
-    fs::File,
-    io::{Read, Write},
-};
+use std::fs::File;
+use std::io::{Read, Write};
 
 use super::{Router, Server};
 
@@ -16,19 +14,13 @@ pub struct ServerInfo {
     pub router: Router,
 }
 
-impl Default for ServerInfo {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
 impl ServerInfo {
-    pub fn new() -> Self {
+    pub fn new() -> Result<Self> {
         let mut router = Router::new(None);
-        let server = Server::new(router.id, DEFAULT_SERVER_ADDR, DEFAULT_SERVER_PORT);
+        let server = Server::new(router.id, DEFAULT_SERVER_ADDR, DEFAULT_SERVER_PORT)?;
         router.bind_server(&server);
 
-        Self { server, router }
+        Ok(Self { server, router })
     }
 
     pub fn from_file(file_path: &str) -> Result<Self> {
@@ -95,7 +87,7 @@ mod tests {
         route.add_response(response);
         route.set_active_response(resp_id);
 
-        let mut serverinfo = ServerInfo::new();
+        let mut serverinfo = ServerInfo::new().unwrap();
         serverinfo.server.name = "server name".to_string();
         serverinfo.server.description = "description".to_string();
         serverinfo.router.add_route(route);

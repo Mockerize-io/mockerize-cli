@@ -1,6 +1,7 @@
 use anyhow::{Context, Result};
 use clap::Parser;
 use std::fs;
+use std::net::IpAddr;
 
 use crate::{
     cli::prompt_for_confirmation,
@@ -53,8 +54,8 @@ impl NewCommand {
         route.add_response(response);
         route.set_active_response(resp_id);
 
-        let mut serverinfo = ServerInfo::new();
-        serverinfo.server.address.clone_from(&self.address);
+        let mut serverinfo = ServerInfo::new()?;
+        serverinfo.server.address = self.address.parse::<IpAddr>()?;
         serverinfo.server.port = self.port;
         serverinfo.server.name.clone_from(&self.name);
         serverinfo.server.description = "".into();
