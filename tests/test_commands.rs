@@ -18,10 +18,6 @@ mod tests {
         let stdout = String::from_utf8_lossy(&output.stdout);
         let stderr = String::from_utf8_lossy(&output.stderr);
 
-        #[cfg(target_os = "windows")]
-        assert_eq!(stdout, "ERROR\r\n");
-
-        #[cfg(not(target_os = "windows"))]
         assert_eq!(stdout, "ERROR\n");
 
         // Verify that we see details about our (intentional) syntax error
@@ -42,10 +38,6 @@ mod tests {
         // The output should be "OK" followed by newline
         let stdout = String::from_utf8_lossy(&output.stdout);
 
-        #[cfg(target_os = "windows")]
-        assert_eq!(stdout, "OK\r\n");
-
-        #[cfg(not(target_os = "windows"))]
         assert_eq!(stdout, "OK\n");
     }
 }

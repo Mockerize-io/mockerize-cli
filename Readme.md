@@ -72,3 +72,31 @@ Then you should be able to hit your mock server:
 ```sh
 curl http://127.0.0.1:8080/hello-world
 ```
+
+## Usage in automated testing
+
+One potential use case for the `mockerize-cli` is to automatically run integration tests; perhaps as part of your CI/CD pipeline.
+
+```sh
+# Start mockerize in background, load in our test server config.
+# Also get the process ID of the mockerize instance so we can kill it later.
+./mockerize-cli run integration-test.json >/dev/null 2>&1 &
+pid=$!
+
+# Give it some time to fully start up before we begin our tests.
+# Please consider your exact use case here. A short rest is probably good enough,
+# though may not be the best choice for you. Perhaps add a health-check endpoint
+# to your config, then on something like `wait-for-it` to inform when the server
+# is fully operational and serving traffic
+sleep 1
+
+# Run tests, then exit
+echo "Running (pretend) integration tests"
+sleep 5
+
+echo "Done testing. Killing mockerize-cli (PID $pid)"
+kill -9 $pid
+```
+
+While the above example is often enough for simple use, you may wish to expand upon it.
+Do you need to run different server configs per test? Perhaps you may integrate the startup and shutdown of Mockerize within your test runner.
