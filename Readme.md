@@ -86,7 +86,7 @@ pid=$!
 # Give it some time to fully start up before we begin our tests.
 # Please consider your exact use case here. A short rest is probably good enough,
 # though may not be the best choice for you. Perhaps add a health-check endpoint
-# to your config, then on something like `wait-for-it` to inform when the server
+# to your config, then rely on something like `wait-for-it` to inform when the server
 # is fully operational and serving traffic
 sleep 1
 
