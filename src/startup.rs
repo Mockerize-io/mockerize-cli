@@ -117,7 +117,8 @@ fn make_route_handler(server_headers: Arc<Vec<Header>>, route: &Route) -> Option
 
         async move {
             let mut resp = HttpResponse::build(StatusCode::from_u16(status).unwrap());
-            debug!("Responding with {status}");
+            let body_len = body.len();
+            debug!("Responding with status code {status}, body {body_len} bytes");
 
             for header in headers {
                 resp.append_header((header.key.clone(), header.value.clone()));
