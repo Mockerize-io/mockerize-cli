@@ -3,8 +3,10 @@ use std::process;
 use anyhow::{Ok, Result};
 use clap::{CommandFactory, Parser};
 use dotenv::dotenv;
-use env_logger::Builder;
-use log::LevelFilter;
+use tracing::subscriber::set_global_default;
+use tracing_bunyan_formatter::{BunyanFormattingLayer, JsonStorageLayer};
+use tracing_subscriber::layer::SubscriberExt;
+use tracing_subscriber::{EnvFilter, Registry};
 
 use cli::{Args, Commands};
 
@@ -15,7 +17,7 @@ mod startup;
 #[tokio::main]
 async fn main() -> Result<()> {
     dotenv().ok();
-    setup_logging();
+    setup_logging()?;
 
     let args = Args::parse();
     match &args.command {
@@ -43,13 +45,15 @@ async fn main() -> Result<()> {
 }
 
 /// Configure logging, considering env vars with safe defaults
-fn setup_logging() {
-    // Default to Info level if a RUST_LOG env var not set
-    if std::env::var("RUST_LOG").is_err() {
-        Builder::from_default_env()
-            .filter(None, LevelFilter::Info)
-            .init();
-    } else {
-        env_logger::init();
-    }
+fn setup_logging() -> Result<()> {
+    let env_filter = EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new("info"));
+    let formatting_layer = BunyanFormattingLayer::new("mockerize-cli".to_string(), std::io::stdout);
+    let subscriber = Registry::default()
+        .with(env_filter)
+        .with(JsonStorageLayer)
+        .with(formatting_layer);
+
+    set_global_default(subscriber)?;
+
+    Ok(())
 }

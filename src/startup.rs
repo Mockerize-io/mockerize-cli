@@ -2,10 +2,11 @@ use actix_web::dev::Server;
 use actix_web::http::StatusCode;
 use actix_web::middleware::Logger;
 use actix_web::{web, App, HttpRequest, HttpResponse, HttpServer};
-use log::{debug, info};
 use std::collections::HashMap;
 use std::net::TcpListener;
 use std::sync::Arc;
+use tracing::{debug, info, info_span, Instrument};
+use uuid::Uuid;
 
 use crate::http::{Header, Route, ServerInfo};
 
@@ -85,7 +86,8 @@ fn make_route_handler(server_headers: Arc<Vec<Header>>, route: &Route) -> Option
     let body = Arc::new(response.get_response_body());
     let status = response.status;
     let resp_id = response.id;
-    let req_description = Arc::new(format!("{} {}", route.method, route.path));
+    let method = route.method.clone();
+    let path = route.path.clone();
 
     let route_headers = Arc::new(route.headers.clone());
     let response_headers = Arc::new(response.headers.clone());
@@ -99,17 +101,30 @@ fn make_route_handler(server_headers: Arc<Vec<Header>>, route: &Route) -> Option
         let server_headers = Arc::clone(&server_headers);
         let route_headers = Arc::clone(&route_headers);
         let response_headers = Arc::clone(&response_headers);
-        let req_description = Arc::clone(&req_description);
+        let headers = merge_headers(&server_headers, &route_headers, &response_headers.clone());
+
+        let request_id = Uuid::new_v4();
+        let request_span = info_span!(
+            "Client requested mock endpoint",
+            %request_id,
+            method = %method,
+            path = %path,
+            response_id = %resp_id
+        );
+
+        let _request_span_guard = request_span.enter();
+        let handler_span = info_span!("Handling response");
 
         async move {
-            debug!("Responding to {req_description} with response {resp_id}");
-            let headers = merge_headers(&server_headers, &route_headers, &response_headers.clone());
             let mut resp = HttpResponse::build(StatusCode::from_u16(status).unwrap());
+            debug!("Responding with {status}");
+
             for header in headers {
                 resp.append_header((header.key.clone(), header.value.clone()));
             }
             resp.body(body.to_string())
         }
+        .instrument(handler_span)
     };
 
     let method: actix_web::http::Method = route.method.clone().into();
