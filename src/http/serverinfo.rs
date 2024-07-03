@@ -2,6 +2,7 @@ use anyhow::{Context, Result};
 use serde::{Deserialize, Serialize};
 use std::fs::File;
 use std::io::{Read, Write};
+use std::path::Path;
 
 use super::{Router, Server};
 
@@ -23,18 +24,20 @@ impl ServerInfo {
         Ok(Self { server, router })
     }
 
-    pub fn from_file(file_path: &str) -> Result<Self> {
+    pub fn from_file<P: AsRef<Path>>(file_path: P) -> Result<Self> {
+        let file_path = file_path.as_ref();
         let mut file = File::open(file_path)
-            .with_context(|| format!("Failed to open config file `{}`", file_path))?;
+            .with_context(|| format!("Failed to open config file `{}`", file_path.display()))?;
 
         let mut data = String::new();
-        file.read_to_string(&mut data)
-            .with_context(|| format!("Failed to read contents of file `{}`", file_path))?;
+        file.read_to_string(&mut data).with_context(|| {
+            format!("Failed to read contents of file `{}`", file_path.display())
+        })?;
 
         let serverinfo = serde_json::from_str(&data).with_context(|| {
             format!(
                 "Could not deserialize file contents `{}` into ServerInfo struct",
-                file_path
+                file_path.display()
             )
         })?;
         Ok(serverinfo)
@@ -63,7 +66,7 @@ mod tests {
 
     #[test]
     fn can_load_from_file() {
-        let path = "tests/data/example.server.json";
+        let path = Path::new("tests/data/example.server.json");
         let serverinfo = ServerInfo::from_file(path);
 
         assert!(serverinfo.is_ok());

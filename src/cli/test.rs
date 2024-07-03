@@ -1,3 +1,5 @@
+use std::path::Path;
+
 use anyhow::{Ok, Result};
 use clap::Parser;
 
@@ -13,7 +15,7 @@ pub struct TestCommand {
 impl TestCommand {
     /// Handles `mockerize-cli test <FILENAME>` - Tests config file to see if it contains errors
     pub fn handle(&self) -> Result<()> {
-        let _serverinfo = ServerInfo::from_file(&self.config_file)?;
+        let _serverinfo = ServerInfo::from_file(Path::new(&self.config_file))?;
         Ok(())
     }
 }

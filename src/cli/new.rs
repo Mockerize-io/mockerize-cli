@@ -12,7 +12,7 @@ use crate::{
 #[derive(Parser, Debug)]
 pub struct NewCommand {
     /// Path to output new config file to
-    pub config_file: String,
+    pub config_path: String,
 
     /// Specify the server's name
     #[arg(short, long, default_value = "Mockerize-cli server")]
@@ -34,11 +34,11 @@ pub struct NewCommand {
 impl NewCommand {
     /// Handles `mockerize-cli new <FILENAME>` - generate a new config
     pub fn handle(&self) -> Result<()> {
-        if fs::metadata(&self.config_file).is_ok() {
+        if fs::metadata(&self.config_path).is_ok() {
             // File exist? Prompt for confirmation to overwrite
             println!(
                 "File `{}` already exists. Do you want to overwrite it? (yes/no)",
-                &self.config_file
+                &self.config_path
             );
 
             let user_confirmed = prompt_for_confirmation();
@@ -61,17 +61,17 @@ impl NewCommand {
         serverinfo.server.description = "".into();
         serverinfo.router.add_route(route);
         serverinfo
-            .write_to_file(&self.config_file)
+            .write_to_file(&self.config_path)
             .with_context(|| {
                 format!(
                     "Failed to write serialized serverinfo to file `{}`",
-                    &self.config_file
+                    &self.config_path
                 )
             })?;
 
         Ok(println!(
             "New config successfully saved to `{}`.",
-            &self.config_file
+            &self.config_path
         ))
     }
 }

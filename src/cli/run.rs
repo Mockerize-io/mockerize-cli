@@ -13,7 +13,7 @@ use crate::{http::ServerInfo, startup::run};
 #[derive(Parser, Debug)]
 pub struct RunCommand {
     /// Server config file to load
-    pub config_file: String,
+    pub config_path: String,
 
     /// Specify the number of workers to use
     #[arg(short, long)]
@@ -28,7 +28,7 @@ impl RunCommand {
     /// Handles `mockerize-cli <FILENAME>` - run a mock server
     pub async fn handle(&self) -> Result<()> {
         let pid_handle = create_pid_file(&self.pid_file)?;
-        let serverinfo = ServerInfo::from_file(&self.config_file)?;
+        let serverinfo = ServerInfo::from_file(Path::new(&self.config_path))?;
 
         let addr = format!("{}:{}", serverinfo.server.address, serverinfo.server.port);
         println!("Listening on {}. Press CTRL+C to exit.", &addr);
@@ -52,23 +52,25 @@ impl RunCommand {
     }
 }
 
-fn create_pid_file(path: &str) -> Result<File> {
+fn create_pid_file<P: AsRef<Path>>(path: P) -> Result<File> {
     let pid = process::id();
-    let mut file =
-        File::create(path).with_context(|| format!("Could not create file at `{}`", &path))?;
+    let path = path.as_ref();
+    let mut file = File::create(path)
+        .with_context(|| format!("Could not create file at `{}`", path.display()))?;
 
     file.try_lock_exclusive()
-        .with_context(|| format!("Could not gain exclusive lock on file `{}`", &path))?;
+        .with_context(|| format!("Could not gain exclusive lock on file `{}`", path.display()))?;
 
     writeln!(file, "{}", pid)
-        .with_context(|| format!("Could not write contents to file `{}`", &path))?;
+        .with_context(|| format!("Could not write contents to file `{}`", path.display()))?;
 
     Ok(file)
 }
 
-fn delete_pid_file(path: &str) -> Result<()> {
+fn delete_pid_file<P: AsRef<Path>>(path: P) -> Result<()> {
+    let path = path.as_ref();
     if Path::new(path).exists() {
-        remove_file(path).with_context(|| format!("Could not remove_file `{}`", &path))?;
+        remove_file(path).with_context(|| format!("Could not remove_file `{}`", path.display()))?;
     }
     Ok(())
 }
