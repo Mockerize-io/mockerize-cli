@@ -6,7 +6,7 @@
 
 Mockerize is an open-source, cross platform, lightweight, server mocking application designed from the ground up to make creating mock development servers quick and painless.
 
-![example running mockerize-cli](docs/images/mockerize-cli.svg)
+![example running mockerize-cli](docs/images/mockerize-cli.png)
 
 # Potential use cases
 
@@ -75,7 +75,7 @@ curl http://127.0.0.1:8080/hello-world
 
 ## Usage in automated testing
 
-One potential use case for the `mockerize-cli` is to automatically run integration tests; perhaps as part of your CI/CD pipeline.
+One potential use case for `mockerize-cli` is while automatically running integration tests; perhaps as part of your CI/CD pipeline.
 
 ```sh
 # Start mockerize in background, load in our test server config.
@@ -92,7 +92,7 @@ sleep 1
 
 # Run tests, then exit
 echo "Running (pretend) integration tests"
-sleep 5
+# ... cmd to run tests goes here
 
 echo "Done testing. Killing mockerize-cli (PID $pid)"
 kill -9 $pid
