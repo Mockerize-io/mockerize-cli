@@ -37,18 +37,23 @@ impl Server {
     }
 
     #[allow(dead_code)]
+    /// Modify the "name" field of this `Server`
     pub fn set_name(&mut self, name: &str) -> &mut Self {
         self.name = name.to_string();
         self
     }
 
     #[allow(dead_code)]
+    /// Modify the "description" field of this `Server`
     pub fn set_description(&mut self, name: &str) -> &mut Self {
         self.name = name.to_string();
         self
     }
 
     #[allow(dead_code)]
+    /// Add a new `mockerize_cli::http::Header` to this `Server`
+    /// Any HTTP requests made will include these HTTP headers, unless overridden
+    /// at the route or response level.
     pub fn add_header(&mut self, header: Header) -> &mut Self {
         self.headers.push(header);
         self

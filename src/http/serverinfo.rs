@@ -24,6 +24,7 @@ impl ServerInfo {
         Ok(Self { server, router })
     }
 
+    /// Load and return a `ServerInfo` from a server config JSON file
     pub fn from_file<P: AsRef<Path>>(file_path: P) -> Result<Self> {
         let file_path = file_path.as_ref();
         let mut file = File::open(file_path)
@@ -43,6 +44,7 @@ impl ServerInfo {
         Ok(serverinfo)
     }
 
+    /// Save a serialized `ServerInfo` struct to a server config file in JSON format
     pub fn write_to_file(&self, file_path: &str) -> Result<()> {
         let json = serde_json::to_string_pretty(self)
             .context("Could not serialize ServerInfo struct into JSON")?;

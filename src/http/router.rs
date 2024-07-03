@@ -23,15 +23,14 @@ impl Router {
     }
 
     #[allow(dead_code)]
-    /**
-     * Records the paired server ID with this router, nothing more.
-     */
+    /// Records the paired server ID with this router, nothing more.
     pub fn bind_server(&mut self, server: &Server) -> &mut Self {
         self.server_id = Some(server.id);
         self
     }
 
     #[allow(dead_code)]
+    /// Adds a new `mockerize_cli::http::Route` to the `Router` instance
     pub fn add_route(&mut self, route: Route) -> &mut Self {
         self.routes.push(route);
         self

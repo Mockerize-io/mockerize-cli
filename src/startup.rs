@@ -10,6 +10,10 @@ use uuid::Uuid;
 
 use crate::http::{Header, Route, ServerInfo};
 
+/// Starts a new Actix server to listen and begin accepting HTTP traffic on the
+/// given `TcpListener`. Responses to those HTTP requests will be dicated by
+/// the given `ServerInfo`. By default, Actix will start one worker per CPU
+/// core, however, this may be overridden by specifying a count for `workers`.
 pub fn run(
     serverinfo: ServerInfo,
     listener: TcpListener,
@@ -49,10 +53,10 @@ pub fn run(
     Ok(server)
 }
 
-/**
- * Merge server and route-level headers into a single vector.
- * Any similar keys between the two will let the route-level override.
- */
+/*
+Merge server and route-level headers into a single vector.
+Any similar keys between the two will let the route-level override.
+*/
 pub fn merge_headers(
     server_headers: &[Header],
     route_headers: &[Header],
@@ -78,9 +82,7 @@ pub fn merge_headers(
     map.into_values().collect()
 }
 
-/**
- * Convert our Route into an Actix-web route handler, which can be bound to an Actix Web App
- */
+// Convert our Route into an Actix-web route handler, which can be bound to an Actix Web App
 fn make_route_handler(server_headers: Arc<Vec<Header>>, route: &Route) -> Option<actix_web::Route> {
     let response = route.get_active_response()?;
     let body = Arc::new(response.get_response_body());
@@ -134,14 +136,14 @@ fn make_route_handler(server_headers: Arc<Vec<Header>>, route: &Route) -> Option
     Some(route_handler)
 }
 
-/**
- * Takes a route path, transforms substitution bindings from Mockerize format to Actix-Web, returns the result.
- * Any non-alphanumeric characters within a substitution will be converted to underscore (_).
- * Multiple non-alphanumerics in a row will be condensed down to a single underscore.
- * If the substutition begins with a non-alphanumeric, the first instance will be ignored.
- *
- * For example, `/api/v1/users/:user-id` would be transformed to `/api/v1/users/{user_id}`
- */
+/*
+Takes a route path, transforms substitution bindings from Mockerize format to Actix-Web, returns the result.
+Any non-alphanumeric characters within a substitution will be converted to underscore (_).
+Multiple non-alphanumerics in a row will be condensed down to a single underscore.
+If the substutition begins with a non-alphanumeric, the first instance will be ignored.
+
+For example, `/api/v1/users/:user-id` would be transformed to `/api/v1/users/{user_id}`
+*/
 fn transform_route_path(input: &str) -> String {
     input
         .split('/')

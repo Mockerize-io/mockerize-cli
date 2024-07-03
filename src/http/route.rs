@@ -36,12 +36,12 @@ impl Route {
     }
 
     /**
-     * Get the active response for this route if there is one.
-     *
-     * If a response has not been specifically assigned,
-     * and there are responses registered to this route,
-     * then this will return the first found response.
-     */
+    Get the active response for this route if there is one.
+
+    If a response has not been specifically assigned,
+    and there are responses registered to this route,
+    then this will return the first found response.
+    **/
     pub fn get_active_response(&self) -> Option<&Response> {
         if self.active_response_index.is_none() && !self.responses.is_empty() {
             return self.responses.first();
@@ -52,10 +52,10 @@ impl Route {
     }
 
     /**
-     * Updates the internal references to the wanted active response, such that
-     * subsequent calls to get_active_response() would return that response.
-     * This affects private vars: `active_response`, `active_response_index`
-     */
+    Updates the internal references to the wanted active response, such that
+    subsequent calls to `get_active_response()` would return that response.
+    This affects private vars: `active_response`, `active_response_index`
+    **/
     pub fn set_active_response(&mut self, id: Uuid) {
         self.active_response_index = self.responses.iter().position(|r| {
             if r.id == id {
@@ -68,9 +68,9 @@ impl Route {
     }
 
     /**
-     * Adds an additional response to the valid responses list. Does not
-     * update the active response.
-     */
+    Adds an additional response to the valid responses list. Does not
+    update the active response.
+    **/
     #[allow(unused)]
     pub fn add_response(&mut self, response: Response) {
         self.responses.push(response);
